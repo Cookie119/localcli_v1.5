@@ -902,7 +902,7 @@ window.onload = () => {
 // API HELPER
 // ══════════════════════════════════════════════════════
 async function api(url, options = {}) {
-  const res = await fetch(`http://localhost:5000/api${url}`, {
+  const res = await fetch(`https://localcli-v1-5.vercel.app/api${url}`, {
     ...options,
     headers: { 'Content-Type': 'application/json' },
   });
@@ -1520,13 +1520,13 @@ function drawRoomLabel(ctx, text, x, y, w, h, color, fontSize) {
 
 function exportDXF() {
   if (!state.designId) { toast('Generate a layout first', 'error'); return; }
-  window.location.href = `http://localhost:5000/api/export/dxf/${state.designId}`;
+  window.location.href = `https://localcli-v1-5.vercel.app/api/export/dxf/${state.designId}`;
   toast('Downloading DXF…', 'info');
 }
 
 function exportPDF() {
   if (!state.projectId) { toast('No project selected', 'error'); return; }
-  window.location.href = `http://localhost:5000/api/reports/projects/${state.projectId}/compliance.pdf`;
+  window.location.href = `https://localcli-v1-5.vercel.app/api/reports/projects/${state.projectId}/compliance.pdf`;
   toast('Downloading PDF report…', 'info');
 }
 </script>

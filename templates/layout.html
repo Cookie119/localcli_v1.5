@@ -29,7 +29,7 @@
             
             try {
                 // Get preview data
-                const response = await fetch(`http://localhost:5000/api/designs/${designId}/preview`);
+                const response = await fetch(`https://localcli-v1-5.vercel.app/api/designs/${designId}/preview`);
                 const data = await response.json();
                 
                 if (data.error) {
