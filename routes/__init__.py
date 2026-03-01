@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 
-from . import project, layout, export, cost, design, report, audit, auth, authorities, zones , plots
+from . import project, layout, export, cost, design, report, audit, auth, authorities, zones , plots , templates
 
 
 
@@ -20,7 +20,8 @@ __all__ = [
     'auth',
     'authorities',
     'zones',
-    'plots'
+    'plots' ,
+    'templates'
 
 ]
 

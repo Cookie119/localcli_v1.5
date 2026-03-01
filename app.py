@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request, g
 from models import db_session, engine
 from models.location import State, District
 from models.project import ProjectType
-from routes import project, layout, export, cost, design, report, audit, auth, authorities , zones, plots
+from routes import project, layout, export, cost, design, report, audit, auth, authorities , zones, plots , templates
 import traceback
 import os
 import time
@@ -33,6 +33,7 @@ def create_app():
     app.register_blueprint(authorities.bp)
     app.register_blueprint(zones.bp)
     app.register_blueprint(plots.bp)
+    app.register_blueprint(templates.bp)
     
 
     @app.before_request
