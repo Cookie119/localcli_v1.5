@@ -51,8 +51,12 @@ def create_app():
             pass
         return response
     
+    @app.route('/')
+    def home():
+        return render_template('api_list.html')
+
     @app.route('/not_home')
-    def index():
+    def not_home():
         return render_template('preview.html')
     
 

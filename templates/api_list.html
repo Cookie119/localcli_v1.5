@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nirmaan.AI - API Endpoints</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, monospace;
+        }
+        body {
+            background: #0b1120;
+            color: #e2e8f0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1e293b;
+        }
+        .endpoint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        .category {
+            background: #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .category-header {
+            background: #2d3a4f;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #fff;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .endpoint-list {
+            padding: 1rem;
+        }
+        .endpoint {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+        }
+        .endpoint:hover {
+            border-color: #3b82f6;
+            transform: translateX(4px);
+        }
+        .method {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+            text-transform: uppercase;
+        }
+        .method.get { background: #1e3a8a; color: #93c5fd; }
+        .method.post { background: #14532d; color: #86efac; }
+        .method.patch { background: #713f12; color: #fde047; }
+        .method.delete { background: #7f1d1d; color: #fca5a5; }
+        .path {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin: 0.5rem 0;
+        }
+        .desc {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            margin-top: 0.25rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            background: #334155;
+            color: #94a3b8;
+            margin-left: 0.5rem;
+        }
+        .test-btn {
+            float: right;
+            padding: 0.25rem 0.75rem;
+            background: #2d3a4f;
+            border: 1px solid #4b5565;
+            border-radius: 4px;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .test-btn:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .response {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #0b1120;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #a5f3fc;
+            border: 1px solid #334155;
+            display: none;
+            max-height: 200px;
+            overflow: auto;
+        }
+        .response.show {
+            display: block;
+        }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #4b5565;
+            font-size: 0.85rem;
+        }
+        .base-url {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #3b82f6;
+        }
+        .base-url code {
+            color: #86efac;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Nirmaan.AI API</h1>
+        <div class="subtitle">Complete list of all backend endpoints</div>
+
+        <div class="base-url">
+            <strong> Base URL:</strong> 
+            <code>https://localcli-v1-5.vercel.app</code> (if deployed)<br>
+            <strong>🖥️ Local:</strong> 
+            <code>http://localhost:5000</code>
+        </div>
+
+        <div class="endpoint-grid">
+            <!-- Projects API -->
+            <div class="category">
+                <div class="category-header"> Projects</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/projects/create</strong>
+                        <div class="path">POST /api/projects/create</div>
+                        <div class="desc">Create a new project with initial version</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/projects</strong>
+                        <div class="path">GET /api/projects</div>
+                        <div class="desc">Get all projects (with optional filters)</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/projects/&lt;id&gt;</strong>
+                        <div class="path">GET /api/projects/{id}</div>
+                        <div class="desc">Get project by ID</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/projects/&lt;id&gt;/calculate-far</strong>
+                        <div class="path">POST /api/projects/{id}/calculate-far</div>
+                        <div class="desc">Calculate FAR based on plot and rules</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/projects/&lt;id&gt;/archive</strong>
+                        <div class="path">POST /api/projects/{id}/archive</div>
+                        <div class="desc">Archive a project</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/projects/&lt;id&gt;/clone</strong>
+                        <div class="path">POST /api/projects/{id}/clone</div>
+                        <div class="desc">Clone an existing project</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/projects/&lt;id&gt;/designs</strong>
+                        <div class="path">GET /api/projects/{id}/designs</div>
+                        <div class="desc">Get all designs for a project</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location API -->
+            <div class="category">
+                <div class="category-header"> Location</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/states</strong>
+                        <div class="path">GET /api/states</div>
+                        <div class="desc">Get all active states</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/districts/&lt;state_id&gt;</strong>
+                        <div class="path">GET /api/districts/{state_id}</div>
+                        <div class="desc">Get districts for a state</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/authorities</strong>
+                        <div class="path">GET /api/authorities?district_id=</div>
+                        <div class="desc">Get authorities filtered by district</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/zones</strong>
+                        <div class="path">GET /api/zones</div>
+                        <div class="desc">Get all active zones</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Types & Templates -->
+            <div class="category">
+                <div class="category-header"> Types & Templates</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/project-types</strong>
+                        <div class="path">GET /api/project-types</div>
+                        <div class="desc">Get all project types</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/templates</strong>
+                        <div class="path">GET /api/templates</div>
+                        <div class="desc">Get all active templates</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/templates/&lt;id&gt;</strong>
+                        <div class="path">GET /api/templates/{id}</div>
+                        <div class="desc">Get template with its versions</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/templates/&lt;id&gt;/default/elements</strong>
+                        <div class="path">GET /api/templates/{id}/default/elements</div>
+                        <div class="desc">Get default template elements</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/templates/types</strong>
+                        <div class="path">GET /api/templates/types</div>
+                        <div class="desc">Get distinct template types</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plots -->
+            <div class="category">
+                <div class="category-header"> Plots</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/projects/&lt;id&gt;/plots</strong>
+                        <div class="path">GET /api/projects/{id}/plots</div>
+                        <div class="desc">Get all plots for a project</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/projects/&lt;id&gt;/plots</strong>
+                        <div class="path">POST /api/projects/{id}/plots</div>
+                        <div class="desc">Create a new plot</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/plots/&lt;id&gt;</strong>
+                        <div class="path">GET /api/plots/{id}</div>
+                        <div class="desc">Get a specific plot</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method patch">PATCH</span>
+                        <strong>/api/plots/&lt;id&gt;</strong>
+                        <div class="path">PATCH /api/plots/{id}</div>
+                        <div class="desc">Update a plot</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method delete">DELETE</span>
+                        <strong>/api/plots/&lt;id&gt;</strong>
+                        <div class="path">DELETE /api/plots/{id}</div>
+                        <div class="desc">Delete a plot</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Layout & Design -->
+            <div class="category">
+                <div class="category-header"> Layout & Design</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/layout/generate</strong>
+                        <div class="path">POST /api/layout/generate</div>
+                        <div class="desc">Generate layout using AI or template</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/designs/&lt;id&gt;/elements</strong>
+                        <div class="path">GET /api/designs/{id}/elements</div>
+                        <div class="desc">Get all design elements</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/designs/&lt;id&gt;/preview</strong>
+                        <div class="path">GET /api/designs/{id}/preview</div>
+                        <div class="desc">Simplified preview (flats & rooms)</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/designs/&lt;id&gt;/svg</strong>
+                        <div class="path">GET /api/designs/{id}/svg</div>
+                        <div class="desc">Generate SVG preview</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method patch">PATCH</span>
+                        <strong>/api/designs/&lt;id&gt;/elements/&lt;elem_id&gt;</strong>
+                        <div class="path">PATCH /api/designs/{id}/elements/{elem_id}</div>
+                        <div class="desc">Manual override of design element</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regulations & Rules -->
+            <div class="category">
+                <div class="category-header"> Regulations & Rules</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/regulations</strong>
+                        <div class="path">GET /api/regulations</div>
+                        <div class="desc">Get regulations filtered by authority/state</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/regulations/&lt;id&gt;/rules</strong>
+                        <div class="path">GET /api/regulations/{id}/rules</div>
+                        <div class="desc">Get all rules for a regulation</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/authorities/&lt;id&gt;/regulations</strong>
+                        <div class="path">GET /api/authorities/{id}/regulations</div>
+                        <div class="desc">Get regulations for an authority</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost & BOQ -->
+            <div class="category">
+                <div class="category-header"> Cost & BOQ</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/cost/projects/&lt;id&gt;/boq/generate</strong>
+                        <div class="path">POST /api/cost/projects/{id}/boq/generate</div>
+                        <div class="desc">Generate BOQ from design</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/cost/projects/&lt;id&gt;/boq</strong>
+                        <div class="path">GET /api/cost/projects/{id}/boq</div>
+                        <div class="desc">Get BOQ for project</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method patch">PATCH</span>
+                        <strong>/api/cost/boq-items/&lt;id&gt;</strong>
+                        <div class="path">PATCH /api/cost/boq-items/{id}</div>
+                        <div class="desc">Override BOQ item</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export -->
+            <div class="category">
+                <div class="category-header"> Export</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/export/dxf/&lt;design_id&gt;</strong>
+                        <div class="path">GET /api/export/dxf/{design_id}</div>
+                        <div class="desc">Export design as DXF file</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/reports/projects/&lt;id&gt;/compliance.pdf</strong>
+                        <div class="path">GET /api/reports/projects/{id}/compliance.pdf</div>
+                        <div class="desc">Download compliance PDF report</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/reports/projects/&lt;id&gt;/cost.pdf</strong>
+                        <div class="path">GET /api/reports/projects/{id}/cost.pdf</div>
+                        <div class="desc">Download cost PDF report</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit & Auth -->
+            <div class="category">
+                <div class="category-header"> Audit & Auth</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/audit/projects/&lt;id&gt;</strong>
+                        <div class="path">GET /api/audit/projects/{id}</div>
+                        <div class="desc">Get audit logs for project</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/audit/designs/&lt;id&gt;</strong>
+                        <div class="path">GET /api/audit/designs/{id}</div>
+                        <div class="desc">Get audit logs for design</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <strong>/api/auth/login</strong>
+                        <div class="path">POST /api/auth/login</div>
+                        <div class="desc">User login (JWT)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debug & Health -->
+            <div class="category">
+                <div class="category-header"> Debug & Health</div>
+                <div class="endpoint-list">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/health</strong>
+                        <div class="path">GET /api/health</div>
+                        <div class="desc">Health check endpoint</div>
+                    </div>
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <strong>/api/debug/project/&lt;id&gt;</strong>
+                        <div class="path">GET /api/debug/project/{id}</div>
+                        <div class="desc">Debug project details</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p> Total Endpoints: 35+ | Nirmaan.AI API Documentation</p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Note: Your Vercel URL (https://localcli-v1-5.vercel.app) is returning 404 - check deployment logs</p>
+        </div>
+    </div>
+</body>
+</html>
