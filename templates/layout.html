@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Design Preview</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .floor { margin-bottom: 30px; border: 1px solid #ccc; padding: 10px; }
+        .flat { border: 2px solid blue; margin: 10px; padding: 5px; display: inline-block; }
+        .room { border: 1px solid black; margin: 2px; padding: 2px; display: inline-block; }
+        .living { background: #f0f0ff; }
+        .bedroom { background: #fff0f0; }
+        .kitchen { background: #f0fff0; }
+        .bathroom { background: #fff0ff; }
+        .balcony { background: #fffff0; }
+    </style>
+</head>
+<body>
+    <h1>Design Preview</h1>
+    <input type="number" id="designId" value="60" placeholder="Design ID">
+    <button onclick="loadDesign()">Load Design</button>
+    
+    <div id="preview"></div>
+
+    <script>
+        async function loadDesign() {
+            const designId = document.getElementById('designId').value;
+            const preview = document.getElementById('preview');
+            preview.innerHTML = 'Loading...';
+            
+            try {
+                // Get preview data
+                const response = await fetch(`http://localhost:5000/api/designs/${designId}/preview`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    preview.innerHTML = `Error: ${data.error}`;
+                    return;
+                }
+                
+                // Group flats by floor
+                const floors = {};
+                data.flats.forEach(flat => {
+                    if (!floors[flat.floor]) floors[flat.floor] = [];
+                    floors[flat.floor].push(flat);
+                });
+                
+                // Render preview
+                let html = `<h2>Design ID: ${data.design_id}</h2>`;
+                html += `<p>Total Flats: ${data.total_flats}</p>`;
+                
+                Object.keys(floors).sort().forEach(floor => {
+                    html += `<div class="floor"><h3>Floor ${parseInt(floor) + 1}</h3>`;
+                    floors[floor].forEach(flat => {
+                        html += `<div class="flat" style="width: ${flat.width * 10}px; height: ${flat.length * 10}px; position: relative;">`;
+                        html += `<strong>${flat.name}</strong><br>`;
+                        
+                        flat.rooms.forEach(room => {
+                            html += `<div class="room ${room.name}" 
+                                style="position: absolute; 
+                                       left: ${room.x * 10}px; 
+                                       top: ${room.y * 10}px; 
+                                       width: ${room.width * 10}px; 
+                                       height: ${room.length * 10}px;
+                                       border: 1px solid black;
+                                       background: ${room.name.includes('living') ? '#e6f3ff' : 
+                                                      room.name.includes('bedroom') ? '#ffe6e6' :
+                                                      room.name.includes('kitchen') ? '#e6ffe6' :
+                                                      room.name.includes('bath') ? '#ffe6ff' :
+                                                      room.name.includes('balcony') ? '#ffffe6' : '#f5f5f5'}">
+                                <small>${room.name}</small>
+                            </div>`;
+                        });
+                        
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                });
+                
+                preview.innerHTML = html;
+                
+            } catch (error) {
+                preview.innerHTML = `Error: ${error.message}`;
+            }
+        }
+        
+        // Load default
+        loadDesign();
+    </script>
+</body>
+</html>

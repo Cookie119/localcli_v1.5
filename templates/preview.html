@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nirmaan.AI — Design Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ──────────────────────────────────────────────── */
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #13161e;
+      --surface2:  #1a1e29;
+      --border:    #252a38;
+      --border2:   #2e3447;
+      --accent:    #f07d3c;
+      --accent2:   #e05a1a;
+      --green:     #3ecf8e;
+      --red:       #f26a6a;
+      --yellow:    #f5c842;
+      --blue:      #5b8af0;
+      --text:      #e8eaf0;
+      --muted:     #7a8099;
+      --subtle:    #3a3f52;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius:    10px;
+      --radius-lg: 16px;
+      --shadow:    0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    /* ── RESET ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── SCROLLBAR ───────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    /* ── LAYOUT ──────────────────────────────────────────────── */
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      grid-template-rows: 56px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ──────────────────────────────────────────────── */
+    .topbar {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+    }
+    .logo span { color: var(--accent); }
+    .topbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(62,207,142,0.12);
+      color: var(--green);
+      border: 1px solid rgba(62,207,142,0.25);
+      letter-spacing: 0.04em;
+    }
+    .design-badge {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    #topDesignId { color: var(--accent); font-weight: 600; }
+
+    /* ── SIDEBAR ──────────────────────────────────────────────── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+    }
+    .sidebar-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 20px 6px;
+    }
+    .step-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+      position: relative;
+    }
+    .step-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .step-btn.active {
+      color: var(--text);
+      background: rgba(240,125,60,0.08);
+      border-left-color: var(--accent);
+    }
+    .step-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-family: var(--font-head);
+      transition: all 0.15s;
+    }
+    .step-btn.active .step-num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .step-btn.done .step-num {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+    .step-btn.done .step-num::after { content: '✓'; }
+
+    /* Projects list in sidebar */
+    .projects-list { padding: 0 12px; }
+    .project-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .project-item:hover { background: var(--surface2); color: var(--text); }
+    .project-item.selected { background: rgba(240,125,60,0.1); color: var(--text); }
+    .project-status {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: var(--surface2);
+      color: var(--muted);
+    }
+
+    /* ── MAIN CONTENT ─────────────────────────────────────────── */
+    .main {
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    /* ── PANELS ───────────────────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      overflow: hidden;
+      animation: fadeUp 0.25s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .panel-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(240,125,60,0.12);
+      border: 1px solid rgba(240,125,60,0.2);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .panel-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+    .panel-subtitle { font-size: 0.78rem; color: var(--muted); margin-top: 1px; }
+    .panel-body { padding: 20px; }
+
+    /* ── FORM ELEMENTS ────────────────────────────────────────── */
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 5px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .input, .select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .input:focus, .select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(240,125,60,0.15);
+    }
+    .select { cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a8099' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .select:disabled { opacity: 0.45; cursor: not-allowed; }
+    .input::placeholder { color: var(--subtle); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    /* Checkbox */
+    .check-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .check-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 6px 12px;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .check-label:hover { border-color: var(--accent); color: var(--text); }
+    .check-label input { display: none; }
+    .check-label.checked {
+      background: rgba(240,125,60,0.1);
+      border-color: rgba(240,125,60,0.4);
+      color: var(--accent);
+    }
+
+    /* ── BUTTONS ──────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      outline: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(240,125,60,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); font-size: 0.8rem; padding: 7px 14px; }
+    .btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+    .btn-full { width: 100%; }
+    .btn-loading { opacity: 0.7; pointer-events: none; }
+    .btn-loading::after {
+      content: '';
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Export buttons */
+    .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .btn-export {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+    .btn-export:hover { border-color: var(--accent); color: var(--accent); background: rgba(240,125,60,0.05); }
+    .btn-export .export-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .btn-export.dxf .export-icon { background: rgba(91,138,240,0.15); }
+    .btn-export.pdf .export-icon { background: rgba(242,106,106,0.15); }
+
+    /* ── FAR RESULT CARD ──────────────────────────────────────── */
+    .far-card {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: none;
+      margin-top: 14px;
+    }
+    .far-card.visible { display: block; animation: fadeUp 0.2s ease; }
+    .far-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .far-item { text-align: center; }
+    .far-value {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+    .far-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── COMPLIANCE ───────────────────────────────────────────── */
+    .compliance-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .comp-stat {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      text-align: center;
+      border: 1px solid transparent;
+    }
+    .comp-stat.pass { background: rgba(62,207,142,0.08); border-color: rgba(62,207,142,0.2); }
+    .comp-stat.fail { background: rgba(242,106,106,0.08); border-color: rgba(242,106,106,0.2); }
+    .comp-stat.warn { background: rgba(245,200,66,0.08); border-color: rgba(245,200,66,0.2); }
+    .comp-stat .num {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      display: block;
+    }
+    .comp-stat.pass .num { color: var(--green); }
+    .comp-stat.fail .num { color: var(--red); }
+    .comp-stat.warn .num { color: var(--yellow); }
+    .comp-stat .lbl { font-size: 0.7rem; color: var(--muted); }
+
+    .compliance-list {
+      max-height: 160px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .comp-rule {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      background: var(--surface2);
+    }
+    .comp-rule .rule-code { color: var(--muted); font-family: monospace; font-size: 0.7rem; }
+    .comp-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .comp-dot.pass { background: var(--green); }
+    .comp-dot.fail { background: var(--red); }
+
+    /* ── BOQ ──────────────────────────────────────────────────── */
+    .boq-list { display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto; }
+    .boq-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      background: var(--surface2);
+    }
+    .boq-row .boq-desc { color: var(--text); }
+    .boq-row .boq-amt { color: var(--accent); font-weight: 600; font-family: var(--font-head); }
+    .boq-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 10px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .boq-total .total-amt {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      color: var(--green);
+    }
+
+    /* ── RAW OUTPUT ───────────────────────────────────────────── */
+    .raw-output {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    /* ── TOAST ────────────────────────────────────────────────── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      animation: slideIn 0.2s ease;
+      max-width: 300px;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error   { border-left: 3px solid var(--red); }
+    .toast.info    { border-left: 3px solid var(--blue); }
+
+    /* ── DIVIDER ──────────────────────────────────────────────── */
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+    /* ── SECTION HEADING ──────────────────────────────────────── */
+    .section-heading {
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* ── HIDDEN ───────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">🏗</div>
+      Nirmaan<span>.AI</span>
+    </div>
+    <div class="topbar-right">
+      <div class="design-badge">Design <span id="topDesignId">—</span></div>
+      <div class="status-pill" id="apiStatus">● Connected</div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Workflow</div>
+
+    <button class="step-btn active" id="nav-1" onclick="scrollToStep(1)">
+      <span class="step-num">1</span> Create Project
+    </button>
+    <button class="step-btn" id="nav-2" onclick="scrollToStep(2)">
+      <span class="step-num">2</span> Plot Details
+    </button>
+    <button class="step-btn" id="nav-3" onclick="scrollToStep(3)">
+      <span class="step-num">3</span> Building Config
+    </button>
+    <button class="step-btn" id="nav-4" onclick="scrollToStep(4)">
+      <span class="step-num">4</span> Results
+    </button>
+    <button class="step-btn" id="nav-5" onclick="scrollToStep(5)">
+      <span class="step-num">5</span> Floor Plan
+    </button>
+
+    <div class="sidebar-label" style="margin-top:12px">Projects</div>
+    <div class="projects-list" id="projectList">
+      <div style="font-size:0.75rem;color:var(--muted);padding:4px 10px">Loading…</div>
+    </div>
+
+    <div style="margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-ghost btn-full" onclick="loadProjects()">↻ Refresh Projects</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- ── STEP 1: CREATE PROJECT ── -->
+    <div class="panel" id="step1">
+      <div class="panel-header">
+        <div class="panel-icon">📋</div>
+        <div>
+          <div class="panel-title">Create Project</div>
+          <div class="panel-subtitle">Set up your project with location and type</div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="field">
+          <label>Project Name</label>
+          <input type="text" id="projectName" class="input" placeholder="e.g. Skyline Residency Phase 1" value="Test Project" />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>State</label>
+            <select id="state" class="select" onchange="loadDistricts()">
+              <option value="">Loading…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>District</label>
+            <select id="district" class="select" disabled onchange="loadAuthorities()">
+              <option value="">Select state first</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Authority</label>
+            <select id="authority" class="select" disabled>
+              <option value="">Select district first</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Project Type</label>
+            <select id="projectType" class="select">
+              <option value="">Loading…</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" id="btnCreateProject" onclick="createProject()">
+          Create Project →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: PLOT DETAILS ── -->
+    <div class="panel hidden" id="step2">
+      <div class="panel-header">
+        <div class="panel-icon">📐</div>
+        <div>
+          <div class="panel-title">Plot Details</div>
+          <div class="panel-subtitle">Enter dimensions and calculate FAR</div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="field">
+          <label>Zone</label>
+          <select id="zone" class="select">
+            <option value="">Loading…</option>
+          </select>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Plot Length (m)</label>
+            <input type="number" id="length" class="input" placeholder="30" value="30" />
+          </div>
+          <div class="field">
+            <label>Plot Width (m)</label>
+            <input type="number" id="width" class="input" placeholder="40" value="40" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Road Width (m)</label>
+            <input type="number" id="roadWidth" class="input" placeholder="12" value="12" />
+          </div>
+          <div class="field">
+            <label>Road Category</label>
+            <select id="roadCategory" class="select">
+              <option value="1">Major Road</option>
+              <option value="2">Minor Road</option>
+              <option value="3">Access Road</option>
+            </select>
+          </div>
+        </div>
+        <div class="check-group">
+          <label class="check-label" id="chk-corner" onclick="toggleCheck(this)">
+            <input type="checkbox" id="cornerPlot" /> ⬡ Corner Plot
+          </label>
+        </div>
+
+        <!-- FAR Result -->
+        <div class="far-card" id="farResult">
+          <div class="section-heading">FAR Calculation</div>
+          <div class="far-grid">
+            <div class="far-item">
+              <span class="far-value" id="farPlotArea">—</span>
+              <div class="far-label">Plot Area m²</div>
+            </div>
+            <div class="far-item">
+              <span class="far-value" id="farMaxFar">—</span>
+              <div class="far-label">Max FAR</div>
+            </div>
+            <div class="far-item">
+              <span class="far-value" id="farBuildable">—</span>
+              <div class="far-label">Buildable m²</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="btnSavePlot" onclick="savePlot()" style="margin-top:14px">
+          Save Plot & Calculate FAR →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: BUILDING ── -->
+    <div class="panel hidden" id="step3">
+      <div class="panel-header">
+        <div class="panel-icon">🏢</div>
+        <div>
+          <div class="panel-title">Building Configuration</div>
+          <div class="panel-subtitle">Define floors, units and flat type</div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="grid-3">
+          <div class="field">
+            <label>Total Floors</label>
+            <input type="number" id="floors" class="input" placeholder="5" value="5" />
+          </div>
+          <div class="field">
+            <label>Total Units</label>
+            <input type="number" id="units" class="input" placeholder="10" value="10" />
+          </div>
+          <div class="field">
+            <label>Flat Type</label>
+            <select id="flatType" class="select">
+              <option value="1BHK">1 BHK</option>
+              <option value="2BHK" selected>2 BHK</option>
+              <option value="3BHK">3 BHK</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Template (Optional)</label>
+          <select id="template" class="select">
+            <option value="">No template</option>
+          </select>
+        </div>
+        <div class="section-heading">Options</div>
+        <div class="check-group">
+          <label class="check-label" id="chk-fire" onclick="toggleCheck(this)">
+            <input type="checkbox" id="fireAccess" /> 🔥 Fire Access Road
+          </label>
+          <label class="check-label" id="chk-refuge" onclick="toggleCheck(this)">
+            <input type="checkbox" id="refugeArea" /> 🛟 Refuge Area
+          </label>
+          <label class="check-label" id="chk-fsi" onclick="toggleCheck(this)">
+            <input type="checkbox" id="premiumFSI" /> ⭐ Premium FSI
+          </label>
+        </div>
+        <button class="btn btn-primary btn-full" id="btnGenerate" onclick="generateLayout()">
+          Generate Layout →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: RESULTS ── -->
+    <div class="panel hidden" id="step4">
+      <div class="panel-header">
+        <div class="panel-icon">📊</div>
+        <div>
+          <div class="panel-title">Results</div>
+          <div class="panel-subtitle" id="resultSubtitle">Compliance, costs & exports</div>
+        </div>
+      </div>
+      <div class="panel-body">
+
+        <!-- Compliance -->
+        <div id="complianceSection" class="hidden">
+          <div class="section-heading">Compliance Check</div>
+          <div class="compliance-bar">
+            <div class="comp-stat pass">
+              <span class="num" id="passCount">0</span>
+              <div class="lbl">Passed</div>
+            </div>
+            <div class="comp-stat fail">
+              <span class="num" id="failCount">0</span>
+              <div class="lbl">Failed</div>
+            </div>
+            <div class="comp-stat warn">
+              <span class="num" id="warnCount">0</span>
+              <div class="lbl">Warnings</div>
+            </div>
+          </div>
+          <div class="compliance-list" id="complianceList"></div>
+          <div class="divider"></div>
+        </div>
+
+        <!-- BOQ -->
+        <div id="boqSection" class="hidden">
+          <div class="section-heading">Bill of Quantities</div>
+          <div class="boq-list" id="boqItems"></div>
+          <div class="boq-total">
+            <span>Total Estimate</span>
+            <span class="total-amt" id="totalCost">—</span>
+          </div>
+          <div class="divider"></div>
+        </div>
+
+        <!-- Raw -->
+        <div class="section-heading">Raw API Response</div>
+        <div class="raw-output" id="result">Waiting for data…</div>
+
+        <!-- Exports -->
+        <div class="export-grid">
+          <button class="btn-export dxf" onclick="exportDXF()">
+            <div class="export-icon">📐</div>
+            <div>
+              <div style="font-weight:600">DXF File</div>
+              <div style="font-size:0.7rem;color:var(--muted)">AutoCAD drawing</div>
+            </div>
+          </button>
+          <button class="btn-export pdf" onclick="exportPDF()">
+            <div class="export-icon">📄</div>
+            <div>
+              <div style="font-weight:600">PDF Report</div>
+              <div style="font-size:0.7rem;color:var(--muted)">Compliance report</div>
+            </div>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── STEP 5: LIVE FLOOR PLAN PREVIEW ── -->
+    <div class="panel hidden" id="step5">
+      <div class="panel-header">
+        <div class="panel-icon">🗺️</div>
+        <div>
+          <div class="panel-title">Live Floor Plan</div>
+          <div class="panel-subtitle" id="previewSubtitle">Rendered from design data</div>
+        </div>
+        <!-- Floor switcher tabs -->
+        <div id="floorTabs" style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;"></div>
+      </div>
+      <div class="panel-body" style="padding:0;">
+
+        <!-- Legend -->
+        <div id="roomLegend" style="
+          display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px;
+          border-bottom:1px solid var(--border); background:var(--surface2);
+        "></div>
+
+        <!-- Canvas wrapper — horizontally scrollable -->
+        <div style="overflow:auto; padding:20px; background:var(--bg);">
+          <canvas id="floorCanvas" style="display:block;"></canvas>
+        </div>
+
+        <!-- Floor info bar -->
+        <div id="floorInfo" style="
+          padding:10px 20px; border-top:1px solid var(--border);
+          display:flex; gap:20px; font-size:0.75rem; color:var(--muted);
+          background:var(--surface2);
+        "></div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+const state = {
+  projectId:  null,
+  plotId:     null,
+  designId:   null,
+  farData:    null,
+};
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+window.onload = () => {
+  loadStates();
+  loadProjectTypes();
+  loadZones();
+  loadProjects();
+  loadTemplates();
+  checkApiStatus();
+};
+
+// ══════════════════════════════════════════════════════
+// API HELPER
+// ══════════════════════════════════════════════════════
+async function api(url, options = {}) {
+  const res = await fetch(`http://localhost:5000/api${url}`, {
+    ...options,
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+async function fetchAPI(url, options = {}) {
+  try {
+    return await api(url, options);
+  } catch (err) {
+    toast(err.message, 'error');
+    return null;
+  }
+}
+
+async function checkApiStatus() {
+  try {
+    await api('/states');
+    setApiStatus(true);
+  } catch {
+    setApiStatus(false);
+  }
+}
+
+function setApiStatus(ok) {
+  const el = document.getElementById('apiStatus');
+  el.textContent = ok ? '● Connected' : '● Offline';
+  el.style.background = ok ? 'rgba(62,207,142,0.12)' : 'rgba(242,106,106,0.12)';
+  el.style.color = ok ? 'var(--green)' : 'var(--red)';
+  el.style.borderColor = ok ? 'rgba(62,207,142,0.25)' : 'rgba(242,106,106,0.25)';
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+function toast(msg, type = 'info') {
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ══════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════
+function setActiveNav(n) {
+  [1,2,3,4,5].forEach(i => {
+    document.getElementById(`nav-${i}`).classList.remove('active');
+  });
+  document.getElementById(`nav-${n}`).classList.add('active');
+}
+
+function markNavDone(n) {
+  const btn = document.getElementById(`nav-${n}`);
+  btn.classList.remove('active');
+  btn.classList.add('done');
+}
+
+function scrollToStep(n) {
+  const el = document.getElementById(`step${n}`);
+  if (el && !el.classList.contains('hidden')) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveNav(n);
+  }
+}
+
+function showStep(n) {
+  document.getElementById(`step${n}`).classList.remove('hidden');
+  setActiveNav(n);
+  setTimeout(() => scrollToStep(n), 50);
+}
+
+// ══════════════════════════════════════════════════════
+// CHECKBOX TOGGLE
+// ══════════════════════════════════════════════════════
+function toggleCheck(label) {
+  const cb = label.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  label.classList.toggle('checked', cb.checked);
+}
+
+// ══════════════════════════════════════════════════════
+// POPULATE SELECT HELPER
+// ══════════════════════════════════════════════════════
+function populateSelect(id, items, placeholder, valKey = 'id', labelKey = 'name') {
+  const sel = document.getElementById(id);
+  sel.innerHTML = `<option value="">${placeholder}</option>`;
+  (items || []).forEach(item => {
+    sel.innerHTML += `<option value="${item[valKey]}">${item[labelKey]}</option>`;
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// DROPDOWN LOADERS
+// ══════════════════════════════════════════════════════
+async function loadStates() {
+  const data = await fetchAPI('/states');
+  if (data) populateSelect('state', data, 'Select State');
+}
+
+async function loadDistricts() {
+  const stateId = document.getElementById('state').value;
+  if (!stateId) return;
+  const data = await fetchAPI(`/districts/${stateId}`);
+  if (data) {
+    populateSelect('district', data, 'Select District');
+    document.getElementById('district').disabled = false;
+  }
+}
+
+async function loadAuthorities() {
+  const districtId = document.getElementById('district').value;
+  if (!districtId) return;
+  const data = await fetchAPI(`/authorities?district_id=${districtId}`);
+  if (data) {
+    populateSelect('authority', data, 'Select Authority');
+    document.getElementById('authority').disabled = false;
+  }
+}
+
+async function loadProjectTypes() {
+  const data = await fetchAPI('/project-types');
+  if (data) populateSelect('projectType', data, 'Select Type');
+}
+
+async function loadZones() {
+  const data = await fetchAPI('/zones');
+  if (data) populateSelect('zone', data, 'Select Zone');
+}
+
+async function loadTemplates() {
+  const data = await fetchAPI('/templates?is_active=true');
+  if (data && data.length > 0) {
+    data.forEach(t => {
+      document.getElementById('template').innerHTML +=
+        `<option value="${t.id}">${t.name} (${t.template_type})</option>`;
+    });
+  }
+}
+
+async function loadProjects() {
+  const data = await fetchAPI('/projects');
+  const list = document.getElementById('projectList');
+  if (!data || data.length === 0) {
+    list.innerHTML = '<div style="font-size:0.75rem;color:var(--muted);padding:4px 10px">No projects yet</div>';
+    return;
+  }
+  list.innerHTML = data.map(p => `
+    <div class="project-item ${state.projectId === p.id ? 'selected' : ''}"
+         onclick="selectProject(${p.id}, '${p.name}')">
+      <span>${p.name}</span>
+      <span class="project-status">${p.status}</span>
+    </div>`).join('');
+}
+
+function selectProject(id, name) {
+  state.projectId = id;
+  toast(`Loaded project: ${name}`, 'info');
+  showStep(2);
+  loadProjects();
+}
+
+// ══════════════════════════════════════════════════════
+// STEP 1: CREATE PROJECT
+// ══════════════════════════════════════════════════════
+async function createProject() {
+  const name          = document.getElementById('projectName').value.trim();
+  const projectTypeId = document.getElementById('projectType').value;
+  const authorityId   = document.getElementById('authority').value;
+
+  if (!name || !projectTypeId || !authorityId) {
+    toast('Please fill all required fields', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnCreateProject');
+  btn.classList.add('btn-loading');
+  btn.textContent = '';
+
+  try {
+    const data = await api('/projects/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        project_type_id: parseInt(projectTypeId),
+        authority_id:    parseInt(authorityId),
+      }),
+    });
+
+    state.projectId = data.id;
+    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    markNavDone(1);
+    showStep(2);
+    showStep(4);
+    loadProjects();
+    toast(`Project created — ID ${data.id}`, 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    btn.classList.remove('btn-loading');
+    btn.textContent = 'Create Project →';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// STEP 2: SAVE PLOT & FAR
+// ══════════════════════════════════════════════════════
+async function savePlot() {
+  if (!state.projectId) { toast('Create or select a project first', 'error'); return; }
+
+  const zoneId       = document.getElementById('zone').value;
+  const length       = document.getElementById('length').value;
+  const width        = document.getElementById('width').value;
+  const roadWidth    = document.getElementById('roadWidth').value;
+  const roadCategory = document.getElementById('roadCategory').value;
+  const cornerPlot   = document.getElementById('cornerPlot').checked;
+
+  if (!zoneId || !length || !width) { toast('Please fill all plot fields', 'error'); return; }
+
+  const btn = document.getElementById('btnSavePlot');
+  btn.classList.add('btn-loading'); btn.textContent = '';
+
+  try {
+    const plotData = await api(`/projects/${state.projectId}/plots`, {
+      method: 'POST',
+      body: JSON.stringify({
+        zone_id:          parseInt(zoneId),
+        length_m:         parseFloat(length),
+        width_m:          parseFloat(width),
+        road_width_m:     parseFloat(roadWidth),
+        road_category_id: parseInt(roadCategory),
+        corner_plot:      cornerPlot,
+      }),
+    });
+
+    state.plotId = plotData.id;
+
+    // Calculate FAR
+    const farData = await api(`/projects/${state.projectId}/calculate-far`, {
+      method: 'POST',
+      body: JSON.stringify({
+        plot_area:  parseFloat(length) * parseFloat(width),
+        road_width: parseFloat(roadWidth),
+      }),
+    });
+
+    state.farData = farData;
+
+    // Show FAR card
+    document.getElementById('farPlotArea').textContent = farData.plot_area;
+    document.getElementById('farMaxFar').textContent   = farData.max_far;
+    document.getElementById('farBuildable').textContent = farData.buildable_area;
+    document.getElementById('farResult').classList.add('visible');
+
+    // Show compliance in results
+    if (farData.compliance) renderCompliance(farData.compliance);
+
+    document.getElementById('result').textContent = JSON.stringify(farData, null, 2);
+    markNavDone(2);
+    showStep(3);
+    toast('Plot saved — FAR calculated', 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    btn.classList.remove('btn-loading');
+    btn.textContent = 'Save Plot & Calculate FAR →';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// STEP 3: GENERATE LAYOUT
+// ══════════════════════════════════════════════════════
+async function generateLayout() {
+  if (!state.projectId || !state.plotId || !state.farData) {
+    toast('Complete previous steps first', 'error');
+    return;
+  }
+
+  const floors    = document.getElementById('floors').value;
+  const units     = document.getElementById('units').value;
+  const flatType  = document.getElementById('flatType').value;
+  const length    = parseFloat(document.getElementById('length').value);
+  const width     = parseFloat(document.getElementById('width').value);
+
+  const btn = document.getElementById('btnGenerate');
+  btn.classList.add('btn-loading'); btn.textContent = '';
+
+  try {
+    const data = await api('/layout/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        project_id:        state.projectId,
+        project_version_id: 1,
+        total_floors:      parseInt(floors),
+        flats_per_floor:   Math.ceil(parseInt(units) / parseInt(floors)),
+        flat_type:         flatType,
+        target_area:       state.farData.buildable_area / parseInt(floors),
+        plot_width:        width,
+        plot_length:       length,
+        has_fire_access_road: document.getElementById('fireAccess').checked,
+        has_refuge_area:      document.getElementById('refugeArea').checked,
+        has_premium_fsi:      document.getElementById('premiumFSI').checked,
+      }),
+    });
+
+    state.designId = data.design_id;
+    document.getElementById('topDesignId').textContent = data.design_id;
+    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    document.getElementById('resultSubtitle').textContent =
+      `Design ID ${data.design_id} — compliance, costs & exports`;
+
+    if (data.compliance) renderCompliance(data.compliance);
+    loadBOQ(state.projectId, state.designId);
+    loadFloorPlanPreview(state.designId);   // ← auto-trigger live preview
+
+    markNavDone(3);
+    showStep(4);
+    toast(`Layout generated — Design ${data.design_id}`, 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    btn.classList.remove('btn-loading');
+    btn.textContent = 'Generate Layout →';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// COMPLIANCE RENDER
+// ══════════════════════════════════════════════════════
+function renderCompliance(rules) {
+  const pass = rules.filter(r => r.passed).length;
+  const fail = rules.filter(r => !r.passed).length;
+  const warn = rules.filter(r => r.rule_type === 'soft' && r.passed).length;
+
+  document.getElementById('passCount').textContent = pass;
+  document.getElementById('failCount').textContent = fail;
+  document.getElementById('warnCount').textContent = warn;
+
+  document.getElementById('complianceList').innerHTML = rules.map(r => `
+    <div class="comp-rule">
+      <div class="comp-dot ${r.passed ? 'pass' : 'fail'}"></div>
+      <span class="rule-code">${r.rule_code}</span>
+      <span style="color:${r.passed ? 'var(--green)' : 'var(--red)'};font-size:0.75rem">
+        ${r.passed ? 'PASS' : 'FAIL'}
+      </span>
+    </div>`).join('');
+
+  document.getElementById('complianceSection').classList.remove('hidden');
+}
+
+// ══════════════════════════════════════════════════════
+// BOQ
+// ══════════════════════════════════════════════════════
+async function loadBOQ(projectId, designId) {
+  const data = await fetchAPI(`/cost/projects/${projectId}/boq/generate`, {
+    method: 'POST',
+    body: JSON.stringify({ design_id: designId }),
+  });
+
+  if (data && data.items) {
+    document.getElementById('boqItems').innerHTML = data.items.map(i => `
+      <div class="boq-row">
+        <span class="boq-desc">${i.description}</span>
+        <span class="boq-amt">₹${(i.amount / 100000).toFixed(2)}L</span>
+      </div>`).join('');
+
+    document.getElementById('totalCost').textContent =
+      `₹${(data.total_amount / 10000000).toFixed(2)} Cr`;
+
+    document.getElementById('boqSection').classList.remove('hidden');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// LIVE FLOOR PLAN PREVIEW
+// ══════════════════════════════════════════════════════
+
+// Room colour palette — matches dark theme
+const ROOM_COLORS = {
+  living:   { fill: 'rgba(91,138,240,0.18)',  stroke: 'rgba(91,138,240,0.6)',  label: '#5b8af0' },
+  dining:   { fill: 'rgba(240,125,60,0.15)',  stroke: 'rgba(240,125,60,0.55)', label: '#f07d3c' },
+  kitchen:  { fill: 'rgba(62,207,142,0.15)',  stroke: 'rgba(62,207,142,0.55)', label: '#3ecf8e' },
+  bedroom:  { fill: 'rgba(242,106,106,0.15)', stroke: 'rgba(242,106,106,0.55)',label: '#f26a6a' },
+  bathroom: { fill: 'rgba(180,130,240,0.15)', stroke: 'rgba(180,130,240,0.55)',label: '#b482f0' },
+  balcony:  { fill: 'rgba(245,200,66,0.15)',  stroke: 'rgba(245,200,66,0.55)', label: '#f5c842' },
+  passage:  { fill: 'rgba(120,130,150,0.15)', stroke: 'rgba(120,130,150,0.55)',label: '#a0a8be' },
+  corridor: { fill: 'rgba(60,70,100,0.3)',    stroke: 'rgba(100,115,160,0.6)', label: '#6878a0' },
+};
+
+function getRoomColor(name) {
+  const n = (name || '').toLowerCase();
+  for (const [key, val] of Object.entries(ROOM_COLORS)) {
+    if (n.includes(key)) return val;
+  }
+  return { fill: 'rgba(100,110,130,0.12)', stroke: 'rgba(100,110,130,0.4)', label: '#7a8099' };
+}
+
+// Floor plan state
+let fpData    = null;   // full API response
+let fpFloor   = 0;      // currently displayed floor index
+const SCALE   = 14;     // pixels per metre
+const PAD     = 40;     // canvas padding (px)
+
+async function loadFloorPlanPreview(designId) {
+  try {
+    const data = await api(`/designs/${designId}/preview`);
+    fpData = data;
+    document.getElementById('step5').classList.remove('hidden');
+    document.getElementById('previewSubtitle').textContent =
+      `Design ${designId} · ${data.total_flats} flats · ${data.total_floors || Object.keys(groupByFloor(data.flats)).length} floors`;
+
+    buildFloorTabs(data);
+    buildLegend();
+    renderFloor(0);
+    showStep(5);
+  } catch (err) {
+    toast('Preview load failed: ' + err.message, 'error');
+  }
+}
+
+function groupByFloor(flats) {
+  const floors = {};
+  (flats || []).forEach(f => {
+    const fl = f.floor ?? 0;
+    if (!floors[fl]) floors[fl] = [];
+    floors[fl].push(f);
+  });
+  return floors;
+}
+
+function buildFloorTabs(data) {
+  const floors = groupByFloor(data.flats);
+  const tabsEl = document.getElementById('floorTabs');
+  tabsEl.innerHTML = Object.keys(floors).sort((a,b)=>a-b).map(fl => `
+    <button
+      onclick="renderFloor(${fl})"
+      id="ftab-${fl}"
+      style="
+        padding:4px 12px; border-radius:20px; border:1px solid var(--border2);
+        background:var(--surface2); color:var(--muted); font-size:0.72rem;
+        cursor:pointer; font-family:var(--font-body); transition:all 0.15s;
+      "
+      onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+      onmouseout="if(${fl}!==fpFloor){this.style.borderColor='var(--border2)';this.style.color='var(--muted)'}"
+    >Floor ${parseInt(fl)+1}</button>
+  `).join('');
+}
+
+function buildLegend() {
+  const legendEl = document.getElementById('roomLegend');
+  legendEl.innerHTML = Object.entries(ROOM_COLORS).map(([name, col]) => `
+    <div style="display:flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--muted)">
+      <div style="width:12px;height:12px;border-radius:3px;background:${col.fill};border:1px solid ${col.stroke};flex-shrink:0;"></div>
+      <span style="text-transform:capitalize">${name}</span>
+    </div>
+  `).join('');
+}
+
+function renderFloor(floorIdx) {
+  if (!fpData) return;
+  fpFloor = parseInt(floorIdx);
+
+  // Highlight active tab
+  document.querySelectorAll('[id^="ftab-"]').forEach(btn => {
+    const isActive = btn.id === `ftab-${floorIdx}`;
+    btn.style.background    = isActive ? 'rgba(240,125,60,0.12)' : 'var(--surface2)';
+    btn.style.borderColor   = isActive ? 'var(--accent)' : 'var(--border2)';
+    btn.style.color         = isActive ? 'var(--accent)' : 'var(--muted)';
+  });
+
+  const floors  = groupByFloor(fpData.flats);
+  const flats   = floors[floorIdx] || [];
+  const canvas  = document.getElementById('floorCanvas');
+  const ctx     = canvas.getContext('2d');
+
+  if (!flats.length) {
+    canvas.width = 400; canvas.height = 200;
+    ctx.fillStyle = '#7a8099';
+    ctx.font = '14px DM Sans, sans-serif';
+    ctx.fillText('No data for this floor', 20, 100);
+    return;
+  }
+
+  // Work out overall bounding box across all flats on this floor
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  flats.forEach(flat => {
+    const fx = flat.x ?? 0, fy = flat.y ?? 0;
+    minX = Math.min(minX, fx);
+    minY = Math.min(minY, fy);
+    maxX = Math.max(maxX, fx + (flat.width  ?? 0));
+    maxY = Math.max(maxY, fy + (flat.length ?? 0));
+    (flat.rooms || []).forEach(r => {
+      minX = Math.min(minX, r.x); minY = Math.min(minY, r.y);
+      maxX = Math.max(maxX, r.x + r.width); maxY = Math.max(maxY, r.y + r.length);
+    });
+  });
+
+  const drawW = (maxX - minX) * SCALE + PAD * 2;
+  const drawH = (maxY - minY) * SCALE + PAD * 2;
+
+  canvas.width  = Math.max(drawW, 300);
+  canvas.height = Math.max(drawH, 200);
+
+  // Background
+  ctx.fillStyle = '#0d0f14';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth   = 1;
+  for (let x = 0; x <= canvas.width; x += SCALE) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  }
+  for (let y = 0; y <= canvas.height; y += SCALE) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+
+  // Helper: world → canvas
+  const cx = x => (x - minX) * SCALE + PAD;
+  const cy = y => canvas.height - PAD - (y - minY) * SCALE;   // flip Y
+
+  // Draw corridor if present
+  if (fpData.corridor) {
+    const c = fpData.corridor;
+    ctx.fillStyle   = ROOM_COLORS.corridor.fill;
+    ctx.strokeStyle = ROOM_COLORS.corridor.stroke;
+    ctx.lineWidth   = 1;
+    ctx.beginPath();
+    ctx.rect(cx(c.x), cy(c.y + c.length), c.width * SCALE, c.length * SCALE);
+    ctx.fill(); ctx.stroke();
+    drawRoomLabel(ctx, 'CORRIDOR', cx(c.x), cy(c.y + c.length), c.width * SCALE, c.length * SCALE, ROOM_COLORS.corridor.label, 9);
+  }
+
+  // Draw each flat
+  flats.forEach((flat, fi) => {
+    const fx = flat.x ?? 0, fy = flat.y ?? 0;
+    const fw = flat.width ?? 0, fl_ = flat.length ?? 0;
+
+    // Flat outline
+    ctx.strokeStyle = 'rgba(240,125,60,0.5)';
+    ctx.lineWidth   = 2;
+    ctx.strokeRect(cx(fx), cy(fy + fl_), fw * SCALE, fl_ * SCALE);
+
+    // Draw rooms
+    (flat.rooms || []).forEach(room => {
+      const col = getRoomColor(room.name);
+      const rx = cx(room.x), ry = cy(room.y + room.length);
+      const rw = room.width * SCALE, rl = room.length * SCALE;
+
+      // Room fill
+      ctx.fillStyle = col.fill;
+      ctx.fillRect(rx, ry, rw, rl);
+
+      // Room border
+      ctx.strokeStyle = col.stroke;
+      ctx.lineWidth   = 1;
+      ctx.strokeRect(rx, ry, rw, rl);
+
+      // Room label
+      drawRoomLabel(ctx, room.name.toUpperCase(), rx, ry, rw, rl, col.label, 9);
+
+      // Dimension hint (only if big enough)
+      if (rw > 45 && rl > 30) {
+        ctx.fillStyle = 'rgba(120,130,155,0.8)';
+        ctx.font      = `9px "SF Mono", monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText(`${room.width.toFixed(1)}×${room.length.toFixed(1)}m`, rx + rw/2, ry + rl - 5);
+      }
+    });
+
+    // Flat number tag
+    const tagX = cx(fx) + fw * SCALE / 2;
+    const tagY = cy(fy) + 14;
+    ctx.fillStyle   = 'rgba(240,125,60,0.9)';
+    ctx.font        = 'bold 10px Syne, sans-serif';
+    ctx.textAlign   = 'center';
+    ctx.fillText(`FLAT ${fi + 1}`, tagX, tagY);
+  });
+
+  // Floor info bar
+  const totalRooms = flats.reduce((s, f) => s + (f.rooms || []).length, 0);
+  const totalArea  = flats.reduce((s, f) => s + (f.width ?? 0) * (f.length ?? 0), 0);
+  document.getElementById('floorInfo').innerHTML = `
+    <span>Floor ${parseInt(floorIdx)+1}</span>
+    <span>·</span>
+    <span>${flats.length} flat${flats.length !== 1 ? 's' : ''}</span>
+    <span>·</span>
+    <span>${totalRooms} rooms</span>
+    <span>·</span>
+    <span>${totalArea.toFixed(0)} m² total</span>
+    <span>·</span>
+    <span style="color:var(--muted)">Scale 1px = ${(1/SCALE).toFixed(2)}m</span>
+  `;
+}
+
+function drawRoomLabel(ctx, text, x, y, w, h, color, fontSize) {
+  if (w < 20 || h < 14) return;
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.font      = `${fontSize}px DM Sans, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Clip to room bounds so text never bleeds out
+  ctx.beginPath();
+  ctx.rect(x + 2, y + 2, w - 4, h - 4);
+  ctx.clip();
+  ctx.fillText(text, x + w/2, y + h/2 - (w > 45 ? 5 : 0));
+  ctx.restore();
+}
+
+
+function exportDXF() {
+  if (!state.designId) { toast('Generate a layout first', 'error'); return; }
+  window.location.href = `http://localhost:5000/api/export/dxf/${state.designId}`;
+  toast('Downloading DXF…', 'info');
+}
+
+function exportPDF() {
+  if (!state.projectId) { toast('No project selected', 'error'); return; }
+  window.location.href = `http://localhost:5000/api/reports/projects/${state.projectId}/compliance.pdf`;
+  toast('Downloading PDF report…', 'info');
+}
+</script>
+</body>
+</html>
