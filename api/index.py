@@ -3,12 +3,15 @@ import sys
 import os
 from pathlib import Path
 
-# Add the project root to Python path
+# Add project root to path
 root_dir = Path(__file__).parent.parent
-sys.path.append(str(root_dir))
+sys.path.insert(0, str(root_dir))
 
-# Import your Flask app from app.py
-from app import app
+# Import the create_app function
+from app import create_app
+
+# Create the Flask app instance
+app = create_app()
 
 # This is what Vercel looks for
-app = app
+# 'app' is now the Flask instance
