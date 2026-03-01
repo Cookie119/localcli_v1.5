@@ -14,13 +14,15 @@ def create_app():
     app.config.from_object('config.Config')
 
         # Configure CORS - allow requests from Next.js dev server
-    CORS(app, origins=[
-        'http://localhost:3000',  # Next.js default
-        'http://127.0.0.1:3000',
-        'http://localhost:5000',   # Your Flask server
-        'http://127.0.0.1:5000',
-    ], supports_credentials=True)
+    # CORS(app, origins=[
+    #     'http://localhost:3000',  # Next.js default
+    #     'http://127.0.0.1:3000',
+    #     'http://localhost:5000',   # Your Flask server
+    #     'http://127.0.0.1:5000',
+    # ], supports_credentials=True)
     
+    CORS(app, origins="*", supports_credentials=True)
+
     # Register blueprints
     app.register_blueprint(project.bp)
     app.register_blueprint(layout.bp)
